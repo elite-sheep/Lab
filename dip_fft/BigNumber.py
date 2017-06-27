@@ -43,6 +43,7 @@ def Mul(numbera,numberb,size,length):
             res[i] = res[i]%10
     return res
 
+## Input the data and use other modules to solve the problems
 def main():
     anum = raw_input("Please input the first number\n")
     bnum = raw_input("please input the second number\n")
