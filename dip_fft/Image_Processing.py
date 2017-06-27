@@ -4,6 +4,10 @@ import math
 import FFT
 import Complex
 
+## calculate distance between 2 points
+def dis(x1,y1,x2,y2):
+    return math.sqrt(1.0*(x1-x2)*(x1-x2)+1.0*(y1-y2)*(y1-y2))
+
 ## Open a new image with given file name
 def InputFromFile(filename):
     res = cv2.imread(filename)
@@ -76,9 +80,9 @@ def Image_FFT(Image):
     return Image
 
 def ImCopy(Matrix):
-    res = [[] for i in range(len(Matrix[0]))]
+    res = [[] for i in range(len(Matrix))]
     for i in range(len(Matrix)):
-        for j in range(len(Matrix[i])-1,-1,-1):
+        for j in range(0,len(Matrix[i]),1):
             res[i].append(Matrix[i][j])
     return res
 
@@ -110,12 +114,11 @@ def lowbandwidth(Image):
     processImage = ImCopy(Image)
 
     Image_origin = Complex2Real(processImage)
-    Output("real.jpg",Image_origin)
 
     for i in range(height*2):
         for j in range(width*2):
-            if(abs(height-i)>800 and abs(j-width)>800):
-                processImage[i][j].real = processImage[i][j].real = 0.0
+            if(dis(i,j,height,width) < 500.0):
+                processImage[i][j].real = dis(i,j,height,width)/500.0*processImage[i][j].real
 
     Image_trans = Image_FFTInverse(processImage)
     Image_res = Complex2Real(Image_trans)
@@ -124,6 +127,30 @@ def lowbandwidth(Image):
             if((i+j)&1 > 0):
                 Image_res[i][j] = -1*Image_res[i][j]
     Output("lowband.jpg",np.array(Image_res))
+
+def highbandwidth(Image):
+    height = len(Image)
+    width = len(Image[0])
+    height /= 2
+    width /= 2
+    processImage = ImCopy(Image)
+
+    Image_origin = Complex2Real(processImage)
+
+    for i in range(height*2):
+        for j in range(width*2):
+            if(dis(i,j,height,width) < 500.0):
+                processImage[i][j].real = (500.0-dis(i,j,height,width))/500.0*processImage[i][j].real
+            else:
+                processImage[i][j].real = 0.0
+
+    Image_trans = Image_FFTInverse(processImage)
+    Image_res = Complex2Real(Image_trans)
+    for i in range(height*2):
+        for j in range(width*2):
+            if((i+j)&1 > 0):
+                Image_res[i][j] = -1*Image_res[i][j]
+    Output("highband.jpg",np.array(Image_res))
 
 
 def main(filename):
@@ -134,6 +161,7 @@ def main(filename):
     Image_out = Complex2Real(Image_res)
     Output("filtered.jpg",np.array(Image_out))
     lowbandwidth(Image_res)
+    highbandwidth(Image_res)
     Image_out = Complex2Real(Image_res)
 
 main("./image.jpg")
