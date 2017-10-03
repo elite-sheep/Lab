@@ -216,5 +216,5 @@ Image_Processing.py:
 
 ### 参考文献
 
-[1]Cormen, Thomas H.; Leiserson, Charles E.; Rivest, Ronald L.; Stein, Clifford (2009) [1990]. Introduction to Algorithms (3rd ed.). MIT Press and McGraw-Hill. 
+[1]Cormen, Thomas H.; Leiserson, Charles E.; Rivest, Ronald L.; Stein, Clifford (2009) [1990]. Introduction to Algorithms (3rd ed.). MIT Press and McGraw-Hill.   
 [2]Rafael C.Gonzalez, Richard E.Woods Digital Image Processing (2011). Publishing House Of Electronics Industry
