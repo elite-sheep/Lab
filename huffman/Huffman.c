@@ -16,10 +16,9 @@ int min(int a,int b)
 	return b;
 }
 
-status init_heap(heap* root)
+heap* init_heap()
 {
-	if(!root)return error;
-	//if the heap does not exsist, return error!
+	heap* root = (heap*)malloc(sizeof(heap));
 	root ->data =(leaf**)malloc(HEAP_MAX*sizeof(leaf*));
 	if(!root ->data)return error;
 	//if allocation failed,return error
@@ -28,6 +27,14 @@ status init_heap(heap* root)
 	root ->size = 0;
 	return ok;
 }
+
+status Destroy_heap(heap* root)
+{
+	free(root->data);
+	free(root);
+	return ok;
+}
+
 status min_heapify(heap* root,int index)
 {
 	//The index and the data shpuld follow the rules!
@@ -152,11 +159,32 @@ status Huffman_translate(leaf* T)
 }
 
 
-status InitTree(HuffmanTree* T,int n)
+HuffmanTree* InitTree(int n)
 {
+	HuffmanTree* T = (HuffmanTree*)malloc(sizeof(HuffmanTree));
 	T ->info =(leaf *)malloc((2*n+5)*sizeof(leaf));
 	if(!T ->info)return error;
 	T ->root =NULL;
+	return ok;
+}
+
+status Destroy_HuffmanTree(HuffmanTree* T)
+{
+	Destroy_HuffmanLeave(T->root);
+	Destroy_HuffmanLeave(T->info);
+}
+
+status Destroy_HuffmanLeave(leaf* T)
+{
+	if(T->lchild != NULL)
+	{
+		Destroy_HuffmanLeave(T->lchild);
+	}
+	if(T->rchild != NULL)
+	{
+		Destroy_HuffmanLeave(T->rchild);
+	}
+	free(T);
 	return ok;
 }
 

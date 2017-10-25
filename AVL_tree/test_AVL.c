@@ -10,14 +10,14 @@
 int main()
 {
 	int a = 41;
-	AVL_tree mytree;
-	init_tree(&mytree,a);
+	AVL_tree* mytree = init_tree(a);
 	while(1)
 	{
-	    scanf("%d",&a);
-		AVL_insert(&mytree,mytree.root,a);
+		scanf("%d",&a);
+		AVL_insert(mytree,mytree -> root,a);
 		if(a == 0)break;
 	}
-		printf("The height of my AVL tree is %d",mytree.root ->height);
+	printf("The height of my AVL tree is %d\n",mytree -> root ->height);
+	AVL_Destroy(mytree);
 	return 0;
 }

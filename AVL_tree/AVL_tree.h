@@ -31,7 +31,9 @@ typedef struct _AVL_tree
 
 typedef bool status;
 
-status init_tree(AVL_tree* T, int e);
+AVL_tree* init_tree(int e);
+status AVL_Destroy(AVL_tree* T);
+status AVL_Leaf_Destroy(AVL_leaf* T, AVL_leaf* nil);
 status l_rotate(AVL_tree* T, AVL_leaf* x);
 status r_rotate(AVL_tree* T, AVL_leaf* x);
 status AVL_insert(AVL_tree* T,AVL_leaf* root, int e);

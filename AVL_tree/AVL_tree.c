@@ -14,8 +14,10 @@ int Max(int a, int b)
 	if(a > b)return a;
 	else return b;
 }
-status init_tree(AVL_tree* T, int e)
+
+AVL_tree* init_tree(int e)
 {
+	AVL_tree* T = (AVL_tree*)malloc(sizeof(AVL_tree));
 	T ->root = (AVL_leaf *)malloc(sizeof(AVL_leaf));
 	T ->nil = (AVL_leaf *)malloc(sizeof(AVL_leaf));
 	//if allocate failed, return error
@@ -25,9 +27,31 @@ status init_tree(AVL_tree* T, int e)
 	T ->root ->data = e;
 	T ->nil ->height = 0;
 	T ->root ->height = 1;
+	return T;
+}
+
+status AVL_Destroy(AVL_tree* T)
+{
+	AVL_Leaf_Destroy(T->root, T->nil);
+	free(T->nil);
+	free(T);
 	return ok;
 }
 
+//destroy the leaf of a AVL Tree
+status AVL_Leaf_Destroy(AVL_leaf* T, AVL_leaf* nil)
+{
+	if(T->lchild != nil)
+	{
+		AVL_Leaf_Destroy(T->lchild, nil);
+	}
+	if(T->rchild != nil)
+	{
+		AVL_Leaf_Destroy(T->rchild, nil);
+	}
+	free(T);
+	return ok;
+}
 
 status l_rotate(AVL_tree* root, AVL_leaf* x)
 {

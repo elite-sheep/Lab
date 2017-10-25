@@ -11,20 +11,20 @@
 #include<stdbool.h>
 #include"Graph.h"
 
-status Init_graph(graph* G,int nn)
+graph* Init_graph(int nn)
 {
 	int i;
 	if(nn >Nmax)return error;
 	//if the size is too huge, return error!
 
+	graph* G = (graph*)malloc(sizeof(graph));
 	G ->list =(Vertex *)malloc((nn+3)*sizeof(Vertex));
 	G ->head =(Index *)malloc((nn+3)*sizeof(Index));
 	G ->pre =(Index **)malloc((nn+3)*sizeof(Index*));
 	G ->dis =(int **)malloc((nn+3)*sizeof(int *));
 	G ->info =(edge *)malloc(Mmax*sizeof(edge));
 
-	if(!G ->head || !G ->info)exit(1);
-    for(i=0;i <G ->n;i++)
+  for(i=0;i <G ->n;i++)
 	{
 		G ->head[i] =-1;
 		G ->dis[i] =(int *)malloc((nn+3)*sizeof(int));
@@ -33,6 +33,17 @@ status Init_graph(graph* G,int nn)
 
 	G ->n =nn;
 	G ->m =0;
+	return G;
+}
+
+status Graph_Destroy(graph* G)
+{
+	free(G->list);
+	free(G->head);
+	free(G->pre);
+	free(G->dis);
+	free(G->info);
+	free(G);
 	return ok;
 }
 
@@ -151,7 +162,7 @@ status Update(graph *G)
 
 	fscanf(fp,"%d",&G ->n);
 	fgetc(fp);
-	Init_graph(G,G ->n);
+	G = Init_graph(G ->n);
 
 	int i,j;
 	for(i=0;i<G ->n;i++)
@@ -204,7 +215,7 @@ status Read(graph *G)
 
 	fscanf(fp,"%d",&G ->n);
 	getc(fp);
-	Init_graph(G,G ->n);
+	G = Init_graph(G ->n);
 
 	int i,j;
 	for(i=0;i<G ->n;i++)

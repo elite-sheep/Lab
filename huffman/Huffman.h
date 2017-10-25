@@ -37,11 +37,14 @@ typedef struct _HEAP
 	struct Huffman_leave** data;
 }heap;
 
-status init_heap(heap* root);
+heap* init_heap();
+status Destroy_heap(heap* root);
 status min_heapify(heap* root,int index);
 status heap_insert(heap* root,leaf* e);
 leaf* heap_pop(heap* root);
 int min(int a,int b);
 status Huffman_coding(leaf* root,char* code);
 status Huffman_translate(leaf* T);
-status InitTree(HuffmanTree* T,int n);
+HuffmanTree* InitTree(int n);
+status Destroy_HuffmanTree(HuffmanTree* T);
+status Destroy_HuffmanLeave(leaf* T);

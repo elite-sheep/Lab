@@ -46,7 +46,8 @@ typedef struct _GRAPH
 	int m;//The number of edge
 }graph;
 
-status Init_graph(graph* G,int nn);
+graph* Init_graph(int nn);
+status Graph_Destroy(graph* G);
 status prim(graph* G,int index);
 status addEdge(graph* G,int from,int to,int len);
 Index LocateVer(graph *G,char info[]);
