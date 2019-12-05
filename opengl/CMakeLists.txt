@@ -2,7 +2,20 @@ cmake_minimum_required(VERSION 3.0)
 
 project(LearnOpenGL)
 
-find_library(opengl_lib OpenGL)
+if(APPLE)
+  include(CMakeFindFrameworks)
+endif(APPLE)
+
+set( INCLUDE_DIRS
+  "/usr/include" 
+  "/usr/local/include" 
+  )
+include_directories( ${INCLUDE_DIRS} )
+
+find_package(X11)
+find_package(OpenGL REQUIRED)
+find_package(glfw3 REQUIRED)
+find_package(GLUT REQUIRED)
 
 find_library(glut_lib GLUT)
 
@@ -11,13 +24,13 @@ find_library(glew_lib GLEW)
 find_library(glm_lib GLM)
 
 add_executable(helloworld
-  ./helloworld/main.cpp
-  ./common/shaderutils.cpp
-  ./common/shaderutils.h
+  ${CMAKE_SOURCE_DIR}/common/shaderutils.cpp
+  ${CMAKE_SOURCE_DIR}/common/shaderutils.h
+  ${CMAKE_SOURCE_DIR}/helloworld/main.cpp
 
-  ./helloworld/hellofrag.glsl
-  ./helloworld/hellovertex.glsl
+  ${CMAKE_SOURCE_DIR}/helloworld/hellofrag.glsl
+  ${CMAKE_SOURCE_DIR}/helloworld/hellovertex.glsl
   )
 
-target_link_libraries(helloworld glew ${opengl_lib} ${glut_lib} ${glew_lib})
+target_link_libraries(helloworld ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${glew_lib} glfw)
 set_target_properties(helloworld PROPERTIES OUTPUT_NAME "helloworld")
