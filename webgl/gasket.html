@@ -1,0 +1,31 @@
+<html>
+  <title>
+    2D Sierpinski Gasket
+    </title>
+  <script id="vertex_shader" type="x-shader/x-vertex">
+    attribute vec4 vPos;
+
+    void main() {
+      gl_PointSize = 1.0;
+      gl_Position = vPos;
+    }
+    </script>
+  <script id="fragment_shader" type="x-shader/x-fragment">
+    precision mediump float;
+
+    void main() {
+      gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    }
+    </script>
+
+  <script type="text/javascript" src="./Common/webgl-utils.js"></script>
+  <script type="text/javascript" src="./Common/initShaders.js"></script>
+  <script type="text/javascript" src="./Common/MV.js"></script>
+  <script type="text/javascript" src="./gasket.js"></script>
+
+  <body>
+    <canvas id="gl_canvas" width="512" height="512">
+      Your browser does not support HTML5 canvas.
+      </canvas>
+    </body>
+  </html>
