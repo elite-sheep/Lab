@@ -14,12 +14,17 @@ class LRSolver {
   public:
     LRSolver();
 
-    static LRSolver* fromTraingSet(const std::string& input_file,
+    static LRSolver* fromTraingSet(const std::string& inputFile,
         int numFeature,
         int numTrainingSample,
         float learningRate);
+    static LRSolver* fromWeights(const std::string& weightsFile,
+        int numFeature, float threshHold);
 
     void train(int numInterations);
+    void dumpWeights(const std::string& outputFile);
+
+    void evaluate(float** x, float* y, int numSamples);
     ~LRSolver();
 
     LRSolver(float* x, 
@@ -27,6 +32,10 @@ class LRSolver {
         int numFeature, 
         int numTrainingSample, 
         float learningRate);
+
+    LRSolver(float* weights,
+        int numFeature,
+        float threshHold);
 
   private:
     float* _x;
