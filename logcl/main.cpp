@@ -14,19 +14,20 @@
 #include <string>
 
 int main(int argc, char* argv[]) {
-  if (argc < 10) {
+  if (argc < 6) {
     std::cout << "Usage: ./lr [train, test] --input-file [input file]"
       <<  " --num-features [feature numbers]"
       <<  " --num-samples [sample numbers]"
-      <<  " --learning-rate [learning_rate]";
+      <<  " --learning-rate [learning_rate]" << std::endl;
   }
 
   bool willTrain = false;
-  if (strcmp("train", argv[1])) {
+  if (!strcmp("train", argv[1])) {
     willTrain = true;
   }
 
   if (willTrain) {
+    std::cout << "LR: training start." << std::endl;
     std::string inputFile;
     std::string outputFile = "out.weights";
     int numFeature;
@@ -91,7 +92,7 @@ int main(int argc, char* argv[]) {
     }
 
     ifs >> numSamples;
-    float* y = new float[numFeature];
+    float* y = new float[numSamples];
     float** x = new float*[numSamples];
     for (int i = 0; i < numSamples; ++i) {
       x[i] = new float[numFeature+1];
@@ -99,6 +100,7 @@ int main(int argc, char* argv[]) {
       for (int j = 1; j < numFeature+1; ++j) {
         ifs >> x[i][j];
       }
+      ifs >> y[i];
     }
     LRSolver* solver = LRSolver::fromWeights(weightsFile, numFeature, threshold);
     solver->evaluate(x, y, numSamples);

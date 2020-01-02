@@ -24,7 +24,7 @@ LRSolver* LRSolver::fromTraingSet(const std::string& inputFile,
   std::ifstream ifs;
   ifs.open(inputFile, std::ifstream::in);
   if (!ifs.good()) {
-    std::cerr << "LRSolver: File I/O error." << std::endl;
+    std::cerr << "LRSolver: File I/O error " << inputFile <<std::endl;
     ifs.close();
     return nullptr;
   }
@@ -73,7 +73,7 @@ LRSolver::LRSolver(float* x,
     weights = new float[numFeature + 1];
   }
 
-LRSolver::LRSolver(float* weights, int numFeature, float threshHold):weights(weights),
+LRSolver::LRSolver(float* _weights, int numFeature, float threshHold):weights(_weights),
   _numFeature(numFeature),
   _threshHold(threshHold) {
     _x = nullptr;
@@ -131,6 +131,7 @@ void LRSolver::train(int numInterations) {
 void LRSolver::dumpWeights(const std::string& outputFile) {
   std::ofstream ofs;
   ofs.open(outputFile, std::ofstream::out | std::ofstream::app);
+  std::cout << _numFeature << std::endl;
   for (int i = 0; i < _numFeature+1; ++i)
     ofs << weights[i] << std::endl;
   return;
@@ -141,7 +142,7 @@ void LRSolver::evaluate(float** x, float *y, int numSamples) {
   float tmpY;
   for (int i = 0; i < numSamples; ++i) {
     tmpY = 0.0;
-    for (int j = 0; j < _numFeature; ++j) {
+    for (int j = 0; j < _numFeature+1; ++j) {
       tmpY += weights[j] * x[i][j];
     }
     if (tmpY > _threshHold) {
