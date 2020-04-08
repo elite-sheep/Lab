@@ -47,13 +47,20 @@ def main():
                 break
 
         print(index)
-        w = 0.0
+        up = 0.0
         for i in range(svIndices.shape[0]):
-            w += dualCoefs[0][i] * gaussainKernel(X[index], X[svIndices[i]], gamma)
+            up += dualCoefs[0][i] * gaussainKernel(X[index], X[svIndices[i]], gamma)
+        up += b
 
-        distances.append(abs(w)/np.linalg.norm(dualCoefs))
-        print(abs(w))
-        print(b)
+        print(svIndices.shape[0])
+        down = 0.0
+        for i in range(svIndices.shape[0]):
+            for j in range(svIndices.shape[0]):
+                down += dualCoefs[0][i] * dualCoefs[0][j] * gaussainKernel(X[i], X[j], gamma)
+
+        distances.append(abs(up)/np.sqrt(down))
+        print(down)
+        print(up)
 
     fig, ax = plt.subplots()
     ax.plot(np.array(logC), np.array(distances))
