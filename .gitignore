@@ -1,1 +1,3 @@
 *.png
+/webgl/ICG_HW1/node_modules
+*.lock
