@@ -1,4 +1,3 @@
-import JSON from "./json.js"
 import { mat4 } from "gl-matrix"
 import WebGLUtils from "./webgl-utils.js"
 
