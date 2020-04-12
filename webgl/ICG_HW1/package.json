@@ -1,0 +1,22 @@
+{
+  "name": "NTU_icg_hw1",
+  "version": "0.0.1",
+  "description": "NTU ICG homework1",
+  "license": "MIT",
+  "keywords": ["WebGL", "graphics"],
+  "scripts": {
+    "build": "webpack --mode=production --config ./build/webpack.config.prod.js",
+    "dev": "webpack-dev-server --mode=development --config ./build/webpack.config.dev.js"
+  },
+  "dependencies": {
+    "file-loader": "^5.0.0",
+    "gl-matrix": "^2.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "html-loader": "^0.5.5",
+    "image-webpack-loader": "^6.0.0",
+    "raw-loader": "^4.0.0",
+    "webpack": "^4.14.13",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.1"
+  }
+}
