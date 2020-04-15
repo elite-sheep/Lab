@@ -1,7 +1,7 @@
 import { mat4 } from "gl-matrix"
 import WebGLUtils from "./webgl-utils.js"
 
-import startVertexShader from "../shaders/startVertexShader.glsl"
+import startVertexShader from "../shaders/gouraudVertexShader.glsl"
 import startFragmentShader from "../shaders/startFragmentShader.glsl"
 import teapotModel from "../model/Teapot.json"
 
@@ -73,11 +73,24 @@ function initShaders() {
 
     shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
     gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+  shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
+  gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
+
     shaderProgram.vertexFrontColorAttribute = gl.getAttribLocation(shaderProgram, "aFrontColor");
     gl.enableVertexAttribArray(shaderProgram.vertexFrontColorAttribute);
 
     shaderProgram.pMatrixUniform  = gl.getUniformLocation(shaderProgram, "uPMatrix");
     shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+
+  shaderProgram.pointLightPos1 = gl.getUniformLocation(shaderProgram, "u_pointLightPos1");
+  shaderProgram.lightColor1 = gl.getUniformLocation(shaderProgram, "u_lightColor1");
+  shaderProgram.pointLightPos2 = gl.getUniformLocation(shaderProgram, "u_pointLightPos2");
+  shaderProgram.lightColor2 = gl.getUniformLocation(shaderProgram, "u_lightColor2");
+  shaderProgram.ambientColor = gl.getUniformLocation(shaderProgram, "u_ambient");
+  shaderProgram.diffuseColor = gl.getUniformLocation(shaderProgram, "u_diffuse");
+  shaderProgram.specularColor = gl.getUniformLocation(shaderProgram, "u_specular");
+  shaderProgram.shiningness = gl.getUniformLocation(shaderProgram, "u_shiningness");
 }
 
 function setMatrixUniforms() {
@@ -139,10 +152,27 @@ function drawScene() {
 
     setMatrixUniforms();
 
+  gl.uniform3f(shaderProgram.pointLightPos1, -8.0, -3.0, 1.0);
+  gl.uniform3f(shaderProgram.lightColor1, 0.5, 0.5, 0.5);
+  gl.uniform3f(shaderProgram.pointLightPos2, 8.0, 3.0, 1.0);
+  gl.uniform3f(shaderProgram.lightColor2, 0.5, 0.5, 0.5);
+  gl.uniform3f(shaderProgram.ambientColor, 0.24, 0.19, 0.07);
+  gl.uniform3f(shaderProgram.diffuseColor, 0.75, 0.6, 0.22);
+  gl.uniform3f(shaderProgram.specularColor, 0.62, 0.55, 0.36);
+  gl.uniform1f(shaderProgram.shiningness, 0.4 * 128.0);
+
     // Setup teapot position data
     gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexPositionBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, 
                            teapotVertexPositionBuffer.itemSize, 
+                           gl.FLOAT, 
+                           false, 
+                           0, 
+                           0);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexNormalBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, 
+                           teapotVertexNormalBuffer.itemSize, 
                            gl.FLOAT, 
                            false, 
                            0, 
@@ -182,7 +212,7 @@ function webGLStart() {
     initShaders();
     loadTeapot();
 
-    gl.clearColor(0.0, 0.2, 0.2, 1.0);
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
 
     tick();
