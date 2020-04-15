@@ -1,8 +1,8 @@
 import { mat4 } from "gl-matrix"
 import WebGLUtils from "./webgl-utils.js"
 
-import startVertexShader from "../shaders/gouraudVertexShader.glsl"
-import startFragmentShader from "../shaders/startFragmentShader.glsl"
+import startVertexShader from "../shaders/phongVertexShader.glsl"
+import startFragmentShader from "../shaders/phongFragmentShader.glsl"
 import teapotModel from "../model/Teapot.json"
 
 // common variables
