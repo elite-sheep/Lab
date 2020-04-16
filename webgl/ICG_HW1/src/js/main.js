@@ -1,8 +1,8 @@
 import { mat4 } from "gl-matrix"
 import WebGLUtils from "./webgl-utils.js"
 
-import startVertexShader from "../shaders/phongVertexShader.glsl"
-import startFragmentShader from "../shaders/phongFragmentShader.glsl"
+import startVertexShader from "../shaders/gouraudVertexShader.glsl"
+import startFragmentShader from "../shaders/startFragmentShader.glsl"
 import teapotModel from "../model/Teapot.json"
 
 // common variables
@@ -29,7 +29,10 @@ function initGL(canvas) {
     }
 
     if (!gl) {
-        alert("Could not initialise WebGL, sorry :-(");
+      alert("Could not initialise WebGL, sorry :-(");
+    }
+    if (!gl.getExtension('OES_standard_derivatives')) {
+      alert("Could not load OES_standard_derivatives.");
     }
 }
 
@@ -159,7 +162,7 @@ function drawScene() {
   gl.uniform3f(shaderProgram.ambientColor, 0.24, 0.19, 0.07);
   gl.uniform3f(shaderProgram.diffuseColor, 0.75, 0.6, 0.22);
   gl.uniform3f(shaderProgram.specularColor, 0.62, 0.55, 0.36);
-  gl.uniform1f(shaderProgram.shiningness, 0.4 * 128.0);
+  gl.uniform1f(shaderProgram.shiningness, 128.0);
 
     // Setup teapot position data
     gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexPositionBuffer);
