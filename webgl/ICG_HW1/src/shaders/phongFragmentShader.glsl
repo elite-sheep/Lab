@@ -34,8 +34,8 @@ void main(void) {
   vec4 specularColor2 = vec4(u_specular, 1.0) *
     pow(max(dot(reflect2, eyeDir), 0.0), u_shiningness);
  
-  vec4 color1 = (ambient + diffuseColor1 + specularColor1) * vec4(u_lightColor1, 1.0);
-  vec4 color2 = (ambient + diffuseColor2 + specularColor2) * vec4(u_lightColor2, 1.0);
+  vec4 color1 = ambient + (diffuseColor1 + specularColor1) * vec4(u_lightColor1, 1.0);
+  vec4 color2 = ambient + (diffuseColor2 + specularColor2) * vec4(u_lightColor2, 1.0);
 
   gl_FragColor = vec4(color1.xyz + color2.xyz, 1.0); 
 }
