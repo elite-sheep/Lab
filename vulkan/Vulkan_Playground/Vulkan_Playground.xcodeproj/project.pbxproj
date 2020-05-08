@@ -272,6 +272,7 @@
 		188802482451F012008E1992 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_STYLE = Automatic;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					/usr/local/Cellar/glm/0.9.9.5/include,
@@ -294,6 +295,7 @@
 		188802492451F012008E1992 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CODE_SIGN_STYLE = Automatic;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					/usr/local/Cellar/glm/0.9.9.5/include,
