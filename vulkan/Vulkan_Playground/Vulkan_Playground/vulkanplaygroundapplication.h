@@ -47,18 +47,27 @@ private:
     void initVulkan();
     void mainLoop();
     void postCleanUp();
+    void drawFrame();
     
     void createSurface();
     void createSwapChain();
     void initPhysicalDevice();
     void createLogicalDevice();
     void creatImageViews();
+    void createRenderPass();
+    void createGraphicsPipeline();
+    void createFramebuffer();
+    void createCommandBuffer();
+    void createSemaphores();
     int rateDevice(VkPhysicalDevice device) const;
     QueueFamilyIndicies findQueueFamilies(VkPhysicalDevice device) const;
     
     VkSurfaceFormatKHR chooseSurfaceFormat(const SwapChainSupportDetails&) const;
     VkPresentModeKHR choosePresentMode(const SwapChainSupportDetails&) const;
     VkExtent2D chooseSwapExtent(const SwapChainSupportDetails&) const;
+    
+    // Shaders related
+    static std::vector<char> readFile(const std::string&);
     
 private:
     GLFWwindow* _window;
@@ -73,6 +82,16 @@ private:
     VkFormat _swapChainImageFormat;
     VkExtent2D _swapChainExtent;
     std::vector<VkImageView> _swapChainImageViews;
+    std::vector<VkFramebuffer> _swapChainFrameBuffers;
+    
+    VkRenderPass _renderPass;
+    VkPipelineLayout _piplineLayout;
+    VkPipeline _graphicsPipline;
+    VkCommandPool _commandPool;
+    std::vector<VkCommandBuffer> _commandBuffers;
+    
+    VkSemaphore _imageAvailableSemaphore;
+    VkSemaphore _renderFinishedSemaphore;
 };
 
 #endif /* vulkanplaygroundapplication_h */
