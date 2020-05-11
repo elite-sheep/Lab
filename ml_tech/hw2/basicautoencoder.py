@@ -22,6 +22,7 @@ class BasicAutoEncoder():
         model.add(tf.keras.layers.Dense(
             self._denseLayerSize, 
             input_shape=(self._featureNum,), 
+            activation='tanh',
             kernel_initializer=denseLayerInitializer,
             bias_initializer='ones'))
         outputLayerInitializer = self.getConstantInitializer(self._denseLayerSize, self._featureNum)

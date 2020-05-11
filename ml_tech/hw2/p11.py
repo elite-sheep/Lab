@@ -12,7 +12,7 @@ def loadData(filename):
 
 def main():
     autoEncoder = BasicAutoEncoder(featureNum=256,
-            denseLayerSize=128,
+            denseLayerSize=2,
             learningRate=0.1)
 
     X = loadData('./data/zip.train')
