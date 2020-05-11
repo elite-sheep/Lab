@@ -3,33 +3,54 @@
 import numpy as np
 import tensorflow as tf
 
+class DenseTranspose(tf.keras.layers.Layer):
+    def __init__(self, dense, activation=None, **kwargs):
+        self.dense = dense
+        self.activation = tf.keras.activations.get(activation)
+        super().__init__(**kwargs)
+
+    def build(self, batch_input_shape):
+        self.bias = self.add_weight(name="bias", shape = [self.dense.input_shape[-1]],
+                initializer=tf.keras.initializers.Ones())
+        super().build(batch_input_shape)
+
+    def call(self, inputs):
+        z = tf.matmul(inputs, self.dense.weights[0], transpose_b=True)
+        return self.activation(z + self.bias)
+
 class MeanSquearError(tf.keras.losses.Loss):
     def call(self, y_true, y_pred):
         error = tf.keras.backend.pow(y_true-y_pred, 2.0)
         return tf.math.reduce_mean(error)
 
 class BasicAutoEncoder():
-    def __init__(self, featureNum, denseLayerSize, learningRate=0.1):
+    def __init__(self, featureNum, denseLayerSize, learningRate=0.1, tieWeights = False):
         self._featureNum = featureNum
         self._denseLayerSize = denseLayerSize
         self._learningRate = learningRate
+        self._tieWeights = tieWeights
         self._model = self.buildUpModel()
         self._isTrained = False
 
     def buildUpModel(self):
         model = tf.keras.Sequential()
         denseLayerInitializer = self.getConstantInitializer(self._featureNum, self._denseLayerSize)
-        model.add(tf.keras.layers.Dense(
-            self._denseLayerSize, 
-            input_shape=(self._featureNum,), 
-            activation='tanh',
-            kernel_initializer=denseLayerInitializer,
-            bias_initializer='ones'))
-        outputLayerInitializer = self.getConstantInitializer(self._denseLayerSize, self._featureNum)
-        model.add(tf.keras.layers.Dense(
-            self._featureNum, 
-            kernel_initializer=outputLayerInitializer,
-            bias_initializer='ones'))
+        encoder = tf.keras.layers.Dense(
+                self._denseLayerSize,
+                input_shape=(self._featureNum,),
+                activation='tanh',
+                kernel_initializer=denseLayerInitializer,
+                bias_initializer='ones')
+        model.add(encoder)
+        if self._tieWeights == True:
+            model.add(DenseTranspose(encoder, 'tanh'))
+        else:
+            outputLayerInitializer = self.getConstantInitializer(self._denseLayerSize, self._featureNum)
+            model.add(tf.keras.layers.Dense(
+                self._featureNum, 
+                kernel_initializer=outputLayerInitializer,
+                bias_initializer='ones'))
+
         optimizer = tf.keras.optimizers.SGD(learning_rate=self._learningRate)
         model.compile(optimizer=optimizer,
                 loss=MeanSquearError())
