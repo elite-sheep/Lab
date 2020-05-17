@@ -12,6 +12,8 @@ uniform float u_shiningness;
 varying vec4 v_position;
 varying vec3 v_normal;
 
+const float lightPower = 5.0;
+
 void main(void) {
   vec3 n = normalize(v_normal);
  
@@ -25,17 +27,17 @@ void main(void) {
   vec4 ambient = vec4(u_ambient, 1.0);   
  
   //calculate Diffuse. 
-  vec4 diffuseColor1 = vec4(u_diffuse, 1.0) * max(dot(n,lightDir1), 0.0);    
-  vec4 diffuseColor2 = vec4(u_diffuse, 1.0) * max(dot(n,lightDir2), 0.0);    
+  vec3 diffuseColor1 = u_diffuse * max(dot(n,lightDir1), 0.0);    
+  vec3 diffuseColor2 = u_diffuse * max(dot(n,lightDir2), 0.0);    
  
   // calculate Specular.
-  vec4 specularColor1 = vec4(u_specular, 1.0) *
+  vec3 specularColor1 = u_specular *
     pow(max(dot(halfVector1, n), 0.0), u_shiningness);
-  vec4 specularColor2 = vec4(u_specular, 1.0) *
+  vec3 specularColor2 = u_specular *
     pow(max(dot(halfVector2, n), 0.0), u_shiningness);
  
-  vec4 color1 = vec4(u_ambient, 1.0) + (diffuseColor1 + specularColor1) * 0.5;
-  vec4 color2 = vec4(u_ambient, 1.0) + (diffuseColor2 + specularColor2) * 0.5;
+  vec3 color1 = (diffuseColor1 + specularColor1) * lightPower * u_lightColor1;
+  vec3 color2 = (diffuseColor2 + specularColor2) * lightPower * u_lightColor2;
 
-  gl_FragColor = vec4((color1 + color2).xyz, 1.0);
+  gl_FragColor = vec4(u_ambient + color1 + color2, 1.0);
 }

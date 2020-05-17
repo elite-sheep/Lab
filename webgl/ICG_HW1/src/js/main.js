@@ -2,8 +2,14 @@ import { mat4 } from "gl-matrix"
 import WebGLUtils from "./webgl-utils.js"
 import Shape from "./shape.js"
 
-import startVertexShader from "../shaders/gouraudVertexShader.glsl"
-import startFragmentShader from "../shaders/startFragmentShader.glsl"
+import blingPhongVertexShader from "../shaders/blingphongVertexShader.glsl"
+import blingPhongFragmentShader from "../shaders/blingphongFragmentShader.glsl"
+import gouraudVertexShader from "../shaders/gouraudVertexShader.glsl"
+import gouraudFragmentShader from "../shaders/startFragmentShader.glsl"
+import phongVertexShader from "../shaders/phongVertexShader.glsl"
+import phongFragmentShader from "../shaders/phongFragmentShader.glsl"
+import flatVertexShader from "../shaders/flatVertexShader.glsl"
+import flatFragmentShader from "../shaders/flatFragmentShader.glsl"
 import teapotModel from "../model/Teapot.json"
 import carModel from "../model/Car_road.json"
 import plantModel from "../model/Plant.json"
@@ -18,6 +24,8 @@ var shape3;
 var lastTime    = 0;
 
 var rotateTeapot = false;
+
+var currentShader = "phong";
 
 function initGL(canvas) {
     try {
@@ -60,8 +68,8 @@ function getShader(shaderSource, type) {
 }
 
 function initShaders() {
-  var fragmentShader = getShader(startFragmentShader, "fragment");
-  var vertexShader   = getShader(startVertexShader, "vertex");
+  var fragmentShader = getShader(phongFragmentShader, "fragment");
+  var vertexShader   = getShader(phongVertexShader, "vertex");
 
   var shaderProgram = gl.createProgram();
   gl.attachShader(shaderProgram, vertexShader);
@@ -72,7 +80,7 @@ function initShaders() {
       alert("Could not initialise shaders");
   }
 
-  shape1 = new Shape(teapotModel, shaderProgram);
+  shape1 = new Shape(teapotModel);
   shape1.setRotationX(20);
   shape1.setRotationY(0);
   shape1.setRotationZ(-5);
@@ -82,8 +90,9 @@ function initShaders() {
   shape1.setTranslation([-25, 2.0, -45.0]);
   shape1.setScale(0.8);
   shape1.setShiningness(0.6);
+  shape1.setShaderProgram(shaderProgram);
 
-  shape2 = new Shape(carModel, shaderProgram);
+  shape2 = new Shape(carModel);
   shape2.setRotationX(-75);
   shape2.setRotationY(0);
   shape2.setRotationZ(60);
@@ -93,8 +102,9 @@ function initShaders() {
   shape2.setTranslation([10, 0, -45.0]);
   shape2.setScale(20.0);
   shape2.setShiningness(0.6);
+  shape2.setShaderProgram(shaderProgram);
 
-  shape3 = new Shape(plantModel, shaderProgram);
+  shape3 = new Shape(plantModel);
   shape3.setRotationX(-45);
   shape3.setRotationY(-10);
   shape3.setRotationZ(55);
@@ -104,6 +114,7 @@ function initShaders() {
   shape3.setTranslation([22, 0, -45.0]);
   shape3.setShiningness(0.4);
   shape3.setScale(8.0);
+  shape3.setShaderProgram(shaderProgram);
 }
 
 export function degToRad(degrees) {
@@ -167,6 +178,38 @@ function webGLStart() {
     tick();
 }
 
+function changeShader(shadername) {
+  if (shadername == currentShader)
+    return;
+
+  currentShader = shadername;
+
+  var fragmentShader;
+  var vertexShader;
+  if (currentShader == 'phong') {
+    fragmentShader = getShader(phongFragmentShader, "fragment");
+    vertexShader   = getShader(phongVertexShader, "vertex");
+  } else if(currentShader == 'gouranud') {
+    fragmentShader = getShader(gouraudFragmentShader, "fragment");
+    vertexShader = getShader(gouraudVertexShader, "vertex");
+  } else if (currentShader == 'flat') {
+    fragmentShader = getShader(flatFragmentShader, "fragment");
+    vertexShader = getShader(flatVertexShader, "vertex");
+  } else if (currentShader == 'bling-phong') {
+    fragmentShader = getShader(blingPhongFragmentShader, "fragment");
+    vertexShader = getShader(blingPhongVertexShader, "vertex");
+  }
+
+  var shaderProgram = gl.createProgram();
+  gl.attachShader(shaderProgram, vertexShader);
+  gl.attachShader(shaderProgram, fragmentShader);
+  gl.linkProgram(shaderProgram);
+
+  shape1.setShaderProgram(shaderProgram);
+  shape2.setShaderProgram(shaderProgram);
+  shape3.setShaderProgram(shaderProgram);
+}
+
 window.onload = function() {
   webGLStart();
 
@@ -177,5 +220,9 @@ window.onload = function() {
     if (e.which == 'L'.charCodeAt(0)) carTranslationX -= 1;
     if (e.which == 'T'.charCodeAt(0)) carTranslationX += 1;
     if (e.which == 'S'.charCodeAt(0)) plantShearX += 0.1;
+    if (e.which == '1'.charCodeAt(0)) changeShader("gouranud");
+    if (e.which == '2'.charCodeAt(0)) changeShader("phong");
+    if (e.which == '3'.charCodeAt(0)) changeShader("flat");
+    if (e.which == '4'.charCodeAt(0)) changeShader("bling-phong");
   }
 }

@@ -4,7 +4,7 @@ attribute vec3 aFrontColor;
 
 uniform mat4 uMVMatrix;
 uniform mat4 uPMatrix;
-uniform mat3 uNMatrix;
+uniform mat4 uNMatrix;
 uniform vec3 u_pointLightPos1;
 uniform vec3 u_lightColor1;
 uniform vec3 u_pointLightPos2;

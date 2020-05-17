@@ -4,9 +4,8 @@ import { mat3, mat4 } from "gl-matrix"
 
 import { gl, degToRad } from "./main.js"
 
-function Shape(_modelSource, _shaderProgram) {
+function Shape(_modelSource) {
   this.modelSource = _modelSource;
-  this.shaderProgram = _shaderProgram;
   this.mvMatrix = mat4.create();
   this.pMatrix = mat4.create();
 
@@ -20,9 +19,12 @@ function Shape(_modelSource, _shaderProgram) {
 
   this.shearX = 0.0;
   this.shearY = 0.0;
+}
 
-  this.initShader();
-  this.setupModel();
+Shape.prototype.setShaderProgram = function(newProgram) {
+  this.shaderProgram = newProgram
+  this.initShader()
+  this.setupModel()
 }
 
 Shape.prototype.setupModel = function() {
@@ -85,17 +87,15 @@ Shape.prototype.drawFrame = function() {
 
   gl.uniformMatrix4fv(this.shaderProgram.pMatrixUniform, false, this.pMatrix);
   gl.uniformMatrix4fv(this.shaderProgram.mvMatrixUniform, false, this.mvMatrix);
-  var nMatrix = mat3.create();
-  var mvInverse = mat4.create();
-  mat4.invert(mvInverse, this.mvMatrix);
-  mat3.fromMat4(nMatrix, mvInverse);
-  mat3.transpose(nMatrix, nMatrix);
-  gl.uniformMatrix3fv(this.shaderProgram.nMatrixUniform, false, nMatrix);
+  var nMatrix = mat4.create();
+  mat4.invert(nMatrix, this.mvMatrix);
+  mat4.transpose(nMatrix, nMatrix);
+  gl.uniformMatrix4fv(this.shaderProgram.nMatrixUniform, false, nMatrix);
 
-  gl.uniform3f(this.shaderProgram.pointLightPos1, 45.0, 30.0, -30.0);
-  gl.uniform3f(this.shaderProgram.lightColor1, 0.5, 0.5, 0.5);
-  gl.uniform3f(this.shaderProgram.pointLightPos2, -45.0, 30.0, -30.0);
-  gl.uniform3f(this.shaderProgram.lightColor2, 0.5, 0.5, 0.5);
+  gl.uniform3f(this.shaderProgram.pointLightPos1, 45.0, 30.0, -35.0);
+  gl.uniform3f(this.shaderProgram.lightColor1, 0.47, 0.24, 0.16);
+  gl.uniform3f(this.shaderProgram.pointLightPos2, -45.0, 30.0, -35.0);
+  gl.uniform3f(this.shaderProgram.lightColor2, 0.47, 0.24, 0.16);
   gl.uniform3f(this.shaderProgram.directionLight, 0.0, -1.0, -1.0);
   gl.uniform3fv(this.shaderProgram.ambientColor, this.ambientColor);
   gl.uniform3fv(this.shaderProgram.diffuseColor, this.diffuseColor);
