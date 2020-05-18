@@ -24,11 +24,12 @@ class MeanSquearError(tf.keras.losses.Loss):
         return tf.math.reduce_mean(error)
 
 class BasicAutoEncoder():
-    def __init__(self, featureNum, denseLayerSize, learningRate=0.1, tieWeights = False):
+    def __init__(self, featureNum, denseLayerSize, learningRate=0.1, tieWeights = False, pca=False):
         self._featureNum = featureNum
         self._denseLayerSize = denseLayerSize
         self._learningRate = learningRate
         self._tieWeights = tieWeights
+        self._pca = pca
         self._model = self.buildUpModel()
         self._isTrained = False
 
@@ -43,7 +44,7 @@ class BasicAutoEncoder():
                 bias_initializer='ones')
         model.add(encoder)
         if self._tieWeights == True:
-            model.add(DenseTranspose(encoder, 'tanh'))
+            model.add(DenseTranspose(encoder, activation=None))
         else:
             outputLayerInitializer = self.getConstantInitializer(self._denseLayerSize, self._featureNum)
             model.add(tf.keras.layers.Dense(
@@ -59,6 +60,12 @@ class BasicAutoEncoder():
 
     def train(self, X, batches=1000):
         batchSize = X.shape[0]
+        if self._pca == True:
+            self._pivot = np.mean(X, axis=0)
+            print(self._pivot.shape)
+            print(X[0].shape)
+            for i in range(batchSize):
+                X[i] = X[i] - self._pivot
         self._model.fit(x=X, y=X, batch_size = batchSize,
                 epochs = batches)
         err = self._model.evaluate(x=X, y=X)
@@ -69,6 +76,9 @@ class BasicAutoEncoder():
         if self.isTrained == False:
             print("BasicAutoEncoder: Not trained.")
             return
+        if self._pca == True:
+            for i in range(X.shape[0]):
+                X[i] = X[i] - self._pivot
         eout = self._model.evaluate(x=X, y=X)
         print("Eout: %f" %(eout))
         return eout
