@@ -2,6 +2,8 @@
 
 import numpy as np
 
+######## Modified Gram-Schmidt Start ########
+
 # Input: A matrix \in R^{m*n}
 # Output: Two matrics QR, Q \in R^{m*n} and R \in R^{n*n}
 def modified_gs(A):
@@ -24,6 +26,10 @@ def modified_gs(A):
             V[:,j] = vj
 
     return Q, R
+
+######## Modified Gram-Schmidt End ########
+
+######## Householder Relector Start ########
 
 def house(A):
     m = A.shape[0]
@@ -61,6 +67,8 @@ def household(A):
     Q = form_q(W)
     return Q, R
 
+######## Householder Relector End ########
+
 def qr(A, mode='household'):
     if mode == 'household':
         Q, R = household(A)
@@ -68,19 +76,3 @@ def qr(A, mode='household'):
     elif mode == "mgs":
         Q, R = modified_gs(A)
         return Q, R
-
-if __name__ == "__main__":
-    A = np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 7.0], [4.0, 2.0, 3.0], [4.0, 2.0, 2.0]])
-    # A = np.array([[1.0, 2.0], [0.0, 1.0], [1.0, 0.0]])
-    Q, R = qr(A, 'mgs')
-    print("*********MGS**********")
-    print(Q)
-    print(R)
-    Q, R = qr(A, 'household')
-    print("*********HOUSE**********")
-    print(Q)
-    print(R)
-    Q, R = np.linalg.qr(A)
-    print("*********REF**********")
-    print(Q)
-    print(R)
