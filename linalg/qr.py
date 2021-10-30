@@ -7,9 +7,9 @@ import numpy as np
 def modified_gs(A):
     m = A.shape[0]
     n = A.shape[1]
-    V = A.copy().astype(np.float32)
-    Q = np.zeros(shape=A.shape, dtype=np.float32)
-    R = np.zeros(shape=(n, n), dtype=np.float32)
+    V = A.copy().astype(np.float64)
+    Q = np.zeros(shape=A.shape, dtype=np.float64)
+    R = np.zeros(shape=(n, n), dtype=np.float64)
 
     for i in range(n):
         vi = V[:,i]
@@ -25,13 +25,62 @@ def modified_gs(A):
 
     return Q, R
 
+def house(A):
+    m = A.shape[0]
+    n = A.shape[1]
+    R = A.copy().astype(np.float64)
+    W = np.zeros(shape=A.shape, dtype=np.float64)
+    im = np.identity(m, dtype=np.float64)
+
+    for k in range(n):
+        x = R[k:m, k]
+        vk = np.sign(x[0]) * np.linalg.norm(x, ord=2) * im[k:m, k] + x
+        vk_norm = np.linalg.norm(vk, ord=2)
+        vk = vk / vk_norm
+        R[k:m,k:n] = R[k:m,k:n] - 2. * np.matmul(np.outer(vk, vk), R[k:m,k:n])
+        W[k:m, k] = vk
+
+    return W, R
+
+def form_q(W):
+    m = W.shape[0]
+    n = W.shape[1]
+    Q = np.identity(m, dtype=np.float64)
+
+    for i in range(n):
+        wi = W[i:m:,i]
+        F = np.identity(m-i) - 2. * np.outer(wi, wi)
+        Qi = np.identity(m)
+        Qi[i:m,i:m] = F
+        Q = np.matmul(Q, Qi)
+
+    return Q
+
+def household(A):
+    W, R = house(A)
+    Q = form_q(W)
+    return Q, R
+
+def qr(A, mode='household'):
+    if mode == 'household':
+        Q, R = household(A)
+        return Q, R
+    elif mode == "mgs":
+        Q, R = modified_gs(A)
+        return Q, R
+
 if __name__ == "__main__":
-    A = np.array([[0.7000, 0.70711], [0.70001, 0.70711]])
-    Q, R = modified_gs(A)
-    ret = np.matmul(Q.transpose(), Q) - np.identity(2, dtype=np.float32)
+    A = np.array([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 7.0], [4.0, 2.0, 3.0], [4.0, 2.0, 2.0]])
+    # A = np.array([[1.0, 2.0], [0.0, 1.0], [1.0, 0.0]])
+    Q, R = qr(A, 'mgs')
+    print("*********MGS**********")
     print(Q)
-    print(np.linalg.norm(ret, ord=2))
+    print(R)
+    Q, R = qr(A, 'household')
+    print("*********HOUSE**********")
+    print(Q)
+    print(R)
     Q, R = np.linalg.qr(A)
-    ret = np.matmul(Q.transpose(), Q) - np.identity(2, dtype=np.float32)
+    print("*********REF**********")
     print(Q)
-    print(np.linalg.norm(ret, ord=2))
+    print(R)
