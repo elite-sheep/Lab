@@ -1,4 +1,4 @@
 *.png
 /webgl/ICG_HW1/node_modules
 *.lock
-*/__pycache__/*
+__pycache__
